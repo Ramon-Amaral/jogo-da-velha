@@ -9,6 +9,14 @@ class Jogada {
     this.linha = linha;
     this.coluna = coluna;
   }
+
+  get valida() {
+    return this.linha > 0 && this.coluna > 0;
+  }
+
+  get invalida(){
+    return !this.valida
+  }
 }
 
 class JogoDaVelha {
@@ -25,8 +33,34 @@ class JogoDaVelha {
   }
 
   Jogar (jogada){
+    if (!this.#jogadaValida(jogada)){
+      return console.log ("JOGADA INVÁLIDA!!!")
+    } else {
     this.#adicionarMarcador(jogada)
     this.jogadorAtual = this.#trocarJogador()
+    }
+  }
+
+  #campo(linha, coluna){
+    return this.tabuleiro[linha -1][coluna -1];
+  }
+  #ocupado(jogada){
+    let {linha, coluna} = jogada;
+    return this.#campo(linha,coluna) !=="";
+  }
+
+  #jogadaValida(jogada){
+    if (jogada.invalida){
+      return false
+    }
+    let {linha, coluna} = jogada;
+    if (linha > this.tamanho || coluna > this.tamanho) {
+      return false
+    }
+    if (this.#ocupado(jogada)){
+      return false
+    } 
+    return true
   }
 
  toString(){
