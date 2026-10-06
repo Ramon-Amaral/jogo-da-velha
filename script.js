@@ -1,6 +1,25 @@
-class Jogador {
+class JogadorHumano {
   constructor(simbolo) {
     this.simbolo = simbolo;
+    this.humano = true;
+  }
+}
+
+class JogadorMaquina {
+  constructor(simbolo) {
+    this.simbolo = simbolo;
+    this.humano = false;
+  }
+
+  jogar(tabuleiro){
+    let linha;
+    let coluna;
+    return new Jogada (linha,coluna)
+  }
+
+  #aleatorio(min,max){
+    let valor = Math.random() * (max - min) + min;
+    return Math.trunc(valor);
   }
 }
 
@@ -21,13 +40,11 @@ class Jogada {
 
 class JogoDaVelha {
   constructor (tamanho){
-    this.j1 = new Jogador("X");
-    this.j2 = new Jogador("O");
+    this.j1 = new JogadorHumano("X");
+    this.j2 = new JogadorHumano("O");
     this.tamanho = tamanho;
-    this.tabuleiro = this.#iniciarTabuleiro();
     this.pontuação = {X:0, O:0};
-    this.jogadorAtual = this.j1;
-    this.vencedor = null;
+    this.zerar();
   }
 
   #iniciarTabuleiro(){
@@ -103,6 +120,12 @@ class JogoDaVelha {
       return false;
     } 
     return true;
+  }
+
+  zerar(){
+    this.tabuleiro = this.#iniciarTabuleiro();
+    this.jogadorAtual = this.j1
+    this.vencedor = null
   }
 
   toString(){
