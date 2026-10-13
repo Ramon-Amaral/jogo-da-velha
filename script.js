@@ -12,14 +12,14 @@ class JogadorMaquina {
   }
 
   jogar(tabuleiro){
-    let linha;
-    let coluna;
+    let linha = this.#aleatorio(1, tabuleiro.length);
+    let coluna = this.#aleatorio(1, tabuleiro.length);
     return new Jogada (linha,coluna)
   }
 
   #aleatorio(min,max){
     let valor = Math.random() * (max - min) + min;
-    return Math.trunc(valor);
+    return Math.round(valor);
   }
 }
 
@@ -52,7 +52,13 @@ class JogoDaVelha {
   }
 
   Jogar(jogada){
-    this.#processarJogada(jogada);
+    if (this.jogadorAtual.humano){
+      this.#processarJogada(jogada);
+    } 
+
+    while (!this.vencedor && !this.jogadorAtual.humano){
+      let
+    }
   }
   
   #processarJogada(jogada){
