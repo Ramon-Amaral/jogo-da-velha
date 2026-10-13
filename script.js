@@ -43,7 +43,7 @@ class JogoDaVelha {
     this.j1 = new JogadorHumano("X");
     this.j2 = new JogadorMaquina("O");
     this.tamanho = tamanho;
-    this.pontuação = { X: 0, O: 0 };
+    this.pontuacao = { X: 0, O: 0 };
     this.zerar();
   }
 
@@ -167,27 +167,16 @@ class JogoDaVelha {
     return this.jogadorAtual === this.j1 ? this.j2 : this.j1;
   }
 
-status(){
-  if(this.vencedor === "-"){
-    return "Empate!!!"
-  } else if (this.vencedor){
-    return `${this.vencedor} venceu!!`
-  } else {
-    return `É a vez de ${this.jogadorAtual.simbolo}`
+  status() {
+    if (this.vencedor === "-") {
+      return "Empate!!!";
+    } else if (this.vencedor) {
+      return `${this.vencedor} venceu!!`;
+    } else {
+      return `É a vez de ${this.jogadorAtual.simbolo}`;
+    }
   }
 }
-}
-
-// const jogo = new JogoDaVelha(4);
-// jogo.Jogar(new Jogada(1, 1));
-// jogo.Jogar(new Jogada(2, 4));
-// jogo.Jogar(new Jogada(1, 2));
-// jogo.Jogar(new Jogada(4, 1));
-// jogo.Jogar(new Jogada(1, 3));
-// jogo.Jogar(new Jogada(4, 2));
-// jogo.Jogar(new Jogada(1, 4));
-
-// console.log(jogo.toString());
 
 class JogoDaVelhaDOM {
   constructor(tabuleiro, informacoes) {
@@ -197,6 +186,7 @@ class JogoDaVelhaDOM {
 
   inicializar(jogo) {
     this.jogo = jogo;
+    this.#criaTabuleiro();
     this.#deixarTabuleiroJogavel();
   }
 
@@ -204,14 +194,14 @@ class JogoDaVelhaDOM {
     const posicoes = this.tabuleiro.getElementsByClassName("posicao");
     for (let posicao of posicoes) {
       posicao.addEventListener("click", (e) => {
-        if(this.jogo.vencedor){
+        if (this.jogo.vencedor) {
           return;
-      }
+        }
         let posicaoSelecionada = e.target.attributes;
         let linha = +posicaoSelecionada.linha.value;
         let coluna = +posicaoSelecionada.coluna.value;
         this.jogo.jogar(new Jogada(linha, coluna));
-        this.informacoes.innerText = this.jogo.status()
+        this.informacoes.innerText = this.jogo.status();
         this.#imprimirSimbolos();
       });
     }
@@ -229,10 +219,48 @@ class JogoDaVelhaDOM {
       }
     }
   }
-  zerar(){
+
+  #criaTabuleiro() {
+    const tamanho = this.jogo.tamanho;
+    let posicoes = [];
+
+    for (let linha = 1; linha <= tamanho; linha++) {
+      const colunas = this.#criarLinhaTabuleiro(linha, tamanho);
+      posicoes.push(...colunas);
+    }
+
+    this.tabuleiro.innerHTML = posicoes.join("");
+    this.tabuleiro.style.gridTemplateColumns = `repeat(${tamanho}, 1fr)`;
+  }
+
+  #criarLinhaTabuleiro(linha, tamanho) {
+    let colunas = [];
+
+    for (let coluna = 1; coluna <= tamanho; coluna++) {
+      let classes = "posicao";
+
+      if (linha === 1) {
+        classes += " posicao-cima";
+      } else if (linha === tamanho) {
+        classes += " posicao-baixo";
+      }
+
+      if (coluna === 1) {
+        classes += " posicao-esquerda";
+      } else if (coluna === tamanho) {
+        classes += " posicao-direita";
+      }
+
+      const elemento = `<div class="${classes}" linha="${linha}" coluna="${coluna}"></div>`;
+      colunas.push(elemento);
+    }
+    return colunas;
+  }
+
+  zerar() {
     this.jogo.zerar();
     let posicoes = document.getElementsByClassName("posicao");
-    [...posicoes].forEach(posicao=>posicao.innerText = "");
+    [...posicoes].forEach((posicao) => (posicao.innerText = ""));
     this.informacoes.innerText = this.jogo.status();
   }
 }
@@ -241,10 +269,23 @@ class JogoDaVelhaDOM {
   const botaoIniciar = document.getElementById("iniciar");
   const informacoes = document.getElementById("informacoes");
   const tabuleiro = document.getElementById("tabuleiro");
-  const jogo = new JogoDaVelha(3);
+  const inputTamanho = document.getElementById("tamanho");
+
+  const novoJogo = (tamanho) => {
+    let tamanhoAtual = tamanho || +inputTamanho.value;
+    const jogo = new JogoDaVelha(tamanhoAtual);
+    return jogo;
+  };
 
   const jogoDOM = new JogoDaVelhaDOM(tabuleiro, informacoes);
-  jogoDOM.inicializar(jogo);
+  jogoDOM.inicializar(novoJogo());
 
-  botaoIniciar.addEventListener("click",()=>{jogoDOM.zerar()})
+  inputTamanho.addEventListener("input", () => {
+    let tamanho = +inputTamanho.value;
+    jogoDOM.inicializar(novoJogo(tamanho));
+  });
+
+  botaoIniciar.addEventListener("click", () => {
+    jogoDOM.zerar();
+  });
 })();

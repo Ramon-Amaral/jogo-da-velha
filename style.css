@@ -34,7 +34,6 @@ body{
 
 #tabuleiro{
   display: grid;
-  grid-template-columns: repeat(3,1fr);
   width: min-content;
   padding-top: 25px;
 }
@@ -64,4 +63,9 @@ body{
 
 .posicao-baixo {
   border-bottom: none;
+}
+
+#tamanho{
+  width: 60px;
+
 }
